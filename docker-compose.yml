@@ -1,0 +1,49 @@
+version: '3.7'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: sedo-parking-casestudy-dbserver
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      - MYSQL_ROOT_PASSWORD=secret
+      - MYSQL_DATABASE=parking
+      - MYSQL_USER=parking
+      - MYSQL_PASSWORD=secret
+    ports:
+      - "8082:3306"
+    volumes:
+      - ./docker/mysql-structure.sql:/docker-entrypoint-initdb.d/a-structure.sql
+      - ./docker/mysql-data.sql:/docker-entrypoint-initdb.d/b-data.sql
+      - ./docker/mysql.cnf:/etc/mysql/conf.d/custom.cnf
+      - database:/var/lib/mysql
+      - code/vendor:vendor/
+  web:
+    image: nginx:latest
+    container_name: sedo-parking-casestudy-webserver
+    ports:
+      - "8080:80"
+    restart: always
+    volumes:
+      - ./code:/code
+      - ./docker/nginx:/etc/nginx/conf.d
+    links:
+      - php
+  php:
+    container_name: sedo-parking-casestudy-phpfpm
+    build:
+      context: ./
+      dockerfile: Dockerfile-php
+    depends_on:
+      - mysql
+    restart: always
+    volumes:
+      - ./code:/code
+      - ./docker/php.ini:/usr/local/etc/php/conf.d/custom.ini
+    environment:
+      APP_PASSWORD: parking
+      APP_USER: secret
+      APP_DATABASE: parking
+volumes:
+  database:

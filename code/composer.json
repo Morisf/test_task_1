@@ -1,0 +1,19 @@
+{
+    "name": "moris/code",
+    "type": "project",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Moris\\Code\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Moris Finkel",
+            "email": "moris@moris.org.ua"
+        }
+    ],
+    "require": {
+        "ext-mysqli": "*"
+    }
+}

@@ -1,0 +1,19 @@
+FROM php:8-fpm
+
+COPY ./docker/php.ini /usr/local/etc/php/conf.d/custom.ini
+COPY ./code /code
+WORKDIR /code
+
+RUN apt-get update && apt-get install -y vim less zip unzip git wget curl libfreetype6-dev --no-install-recommends \
+    && docker-php-ext-install pdo pdo_mysql mysqli \
+    && docker-php-ext-install -j$(nproc) iconv \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+    && cp /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \
+    && apt-get clean autoclean && rm -rf /var/lib/apt/lists/ && rm -rf /var/cache/apt && rm -rf /tmp/*
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+RUN composer install --working-dir=/code && chown -R www-data: /code
+
+USER www-data:www-data
