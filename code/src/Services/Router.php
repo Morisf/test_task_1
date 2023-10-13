@@ -2,9 +2,11 @@
 
 namespace Moris\Code\Services;
 
+use Symfony\Component\HttpFoundation\Response;
+
 class Router
 {
-    const RELATED_LINKS = 'related-links';
+    public const RELATED_LINKS = 'related-links';
     private $controller;
 
     public function __construct($controller)
@@ -12,7 +14,7 @@ class Router
         $this->controller = $controller;
     }
 
-    public function handleRequest()
+    public function handleRequest(): Response
     {
         $uri = parse_url($_SERVER['REQUEST_URI']);
         $path = trim($uri['path'], '/');
@@ -22,11 +24,7 @@ class Router
             case self::RELATED_LINKS:
                 return $this->controller->fetchData($queryArray);
             default:
-                http_response_code(404);
-                return [
-                    'status' => false,
-                    'message' => "Url ot found"
-                ];
+                throw new NotFoundHttpException('Url not found');
         }
     }
 }

@@ -10,7 +10,7 @@ class Connection
     {
         $this->conn = new \mysqli($host, $username, $password, $dbname, $port);
         if ($this->conn->connect_error) {
-            die("Connection failed: " . $this->conn->connect_error);
+            exit('Connection failed: '.$this->conn->connect_error);
         }
     }
 

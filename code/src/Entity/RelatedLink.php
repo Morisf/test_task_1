@@ -27,6 +27,7 @@ class RelatedLink implements EntityInterface
     public function setId(?int $id): RelatedLink
     {
         $this->id = $id;
+
         return $this;
     }
 
@@ -38,6 +39,7 @@ class RelatedLink implements EntityInterface
     public function setRelatedLink(string $related_link): RelatedLink
     {
         $this->related_link = $related_link;
+
         return $this;
     }
 
@@ -49,6 +51,7 @@ class RelatedLink implements EntityInterface
     public function setCreated(\DateTime $created): RelatedLink
     {
         $this->created = $created;
+
         return $this;
     }
 
@@ -60,6 +63,7 @@ class RelatedLink implements EntityInterface
     public function setUpdated(\DateTime $updated): RelatedLink
     {
         $this->updated = $updated;
+
         return $this;
     }
 }

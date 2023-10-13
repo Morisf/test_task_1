@@ -1,19 +1,26 @@
 {
-    "name": "moris/code",
-    "type": "project",
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "Moris\\Code\\": "src/"
-        }
-    },
-    "authors": [
-        {
-            "name": "Moris Finkel",
-            "email": "moris@moris.org.ua"
-        }
-    ],
-    "require": {
-        "ext-mysqli": "*"
+  "name": "moris/code",
+  "type": "project",
+  "license": "MIT",
+  "autoload": {
+    "psr-4": {
+      "Moris\\Code\\": "src/"
     }
+  },
+  "authors": [
+    {
+      "name": "Moris Finkel",
+      "email": "moris@moris.org.ua"
+    }
+  ],
+  "require": {
+    "ext-mysqli": "*",
+    "symfony/http-foundation": "^6.3"
+  },
+  "require-dev": {
+    "friendsofphp/php-cs-fixer": "^3.35"
+  },
+  "config": {
+    "bin-dir": "bin"
+  }
 }

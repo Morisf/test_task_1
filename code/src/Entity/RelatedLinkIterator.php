@@ -40,6 +40,7 @@ class RelatedLinkIterator implements EntityIteratorInterface
     public function addItem(EntityInterface $item): self
     {
         $this->list[] = $item;
+
         return $this;
     }
 
@@ -47,6 +48,7 @@ class RelatedLinkIterator implements EntityIteratorInterface
     {
         return empty($this->list);
     }
+
     public function getList(): array
     {
         return $this->list;

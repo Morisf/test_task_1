@@ -1,2 +1,4 @@
 .idea
 code/vendor
+code/bin
+code/.php-cs-fixer.cache

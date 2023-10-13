@@ -15,15 +15,15 @@ class RelatedLinks
 
     public function getRelatedLinks(string $domain, int $limit): EntityIteratorInterface
     {
-        $stmt = $this->dbConnection->conn()->prepare("
+        $stmt = $this->dbConnection->conn()->prepare('
             select prl.id, prl.related_link, prl.created, prl.updated from parking_related_link prl
             left join parking.parking_domain_has_related_link pdhrl on prl.id = pdhrl.related_link_id
             left join parking.parking_domain pd on pdhrl.domain_id = pd.id
             where pd.domain_name_ace = ?
             limit ?
-        ");
+        ');
 
-        $stmt->bind_param("si", $domain, $limit);
+        $stmt->bind_param('si', $domain, $limit);
 
         $stmt->execute();
 

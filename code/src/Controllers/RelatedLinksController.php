@@ -2,26 +2,25 @@
 
 namespace Moris\Code\Controllers;
 
-use Moris\Code\Entity\EntityIteratorInterface;
 use Moris\Code\Services\RelatedLinks;
+use Symfony\Component\HttpFoundation\Response;
 
-class RelatedLinksController
+class RelatedLinksController implements ControllerInterface
 {
-    private RelatedLinks $relatedLinksDB;
-
-    public function __construct($dbConnector)
+    public function __construct(private RelatedLinks $relatedLinksDB, private Response $response)
     {
-        $this->relatedLinksDB = $dbConnector;
     }
 
-    public function fetchData($request): EntityIteratorInterface|array
+    public function fetchData($request): Response
     {
         if (!isset($request['domain'])) {
-            http_response_code(400);
-            return [
-                'status' => false,
-                'message' => 'Bad request, domain is required.',
-            ];
+            $this->render(
+                [
+                    'status' => false,
+                    'message' => 'Bad request, domain is required.',
+                ],
+                400
+            );
         }
 
         $domain = htmlspecialchars($request['domain']);
@@ -29,10 +28,20 @@ class RelatedLinksController
 
         $relatedLinks = $this->relatedLinksDB->getRelatedLinks($domain, $limit);
 
-        if (!$relatedLinks) {
-            http_response_code(400);
+        $list = $relatedLinks->getList();
+
+        if (!$list) {
+            return $this->render($list, Response::HTTP_NOT_FOUND);
         }
 
-        return $relatedLinks->getList();
+        return $this->render($list);
+    }
+
+    public function render(string|array $body, $statusCode = 200): Response
+    {
+        $this->response->setStatusCode($statusCode);
+        $this->response->setContent(is_array($body) ? json_encode($body) : $body);
+
+        return $this->response;
     }
 }
