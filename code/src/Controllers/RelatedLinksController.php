@@ -3,28 +3,33 @@
 namespace Moris\Code\Controllers;
 
 use Moris\Code\Services\RelatedLinks;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class RelatedLinksController implements ControllerInterface
+class RelatedLinksController extends AbstractController
 {
-    public function __construct(private RelatedLinks $relatedLinksDB, private Response $response)
-    {
+    public function __construct(
+        private readonly RelatedLinks $relatedLinksDB,
+        Response $response
+    ) {
+        parent::__construct($response);
     }
 
-    public function fetchData($request): Response
+    public function fetchData(Request $request): Response
     {
-        if (!isset($request['domain'])) {
-            $this->render(
+        $domain = $request->get('domain');
+        $limit = (int) $request->get('number', 1);
+
+        if (!$domain) {
+            return $this->render(
                 [
                     'status' => false,
                     'message' => 'Bad request, domain is required.',
                 ],
+                ResponseContentType::HTML_RESPONSE_CONTENT_TYPE,
                 400
             );
         }
-
-        $domain = htmlspecialchars($request['domain']);
-        $limit = intval($request['number'] ?? 1);
 
         $relatedLinks = $this->relatedLinksDB->getRelatedLinks($domain, $limit);
 
@@ -35,13 +40,5 @@ class RelatedLinksController implements ControllerInterface
         }
 
         return $this->render($list);
-    }
-
-    public function render(string|array $body, $statusCode = 200): Response
-    {
-        $this->response->setStatusCode($statusCode);
-        $this->response->setContent(is_array($body) ? json_encode($body) : $body);
-
-        return $this->response;
     }
 }

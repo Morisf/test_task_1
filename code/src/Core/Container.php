@@ -4,6 +4,7 @@ namespace Moris\Code\Core;
 
 use Moris\Code\Controllers\RelatedLinksController;
 use Moris\Code\Database\Connection;
+use Moris\Code\Exceptions\UnknownServiceException;
 use Moris\Code\Services\RelatedLinks;
 use Moris\Code\Services\Router;
 use Symfony\Component\HttpFoundation\Response;
@@ -29,7 +30,7 @@ class Container
             case 'router':
                 return new Router(self::get('controller'));
             default:
-                throw new \Exception("Unknown service {$name}");
+                throw new UnknownServiceException("Unknown service {$name}");
         }
     }
 }

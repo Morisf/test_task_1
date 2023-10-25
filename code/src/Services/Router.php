@@ -2,6 +2,8 @@
 
 namespace Moris\Code\Services;
 
+use Moris\Code\Exceptions\NotFoundHttpException;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class Router
@@ -16,15 +18,15 @@ class Router
 
     public function handleRequest(): Response
     {
+        $request = Request::createFromGlobals();
         $uri = parse_url($_SERVER['REQUEST_URI']);
         $path = trim($uri['path'], '/');
-        parse_str($uri['query'] ?? '', $queryArray);
 
         switch ($path) {
             case self::RELATED_LINKS:
-                return $this->controller->fetchData($queryArray);
+                return $this->controller->fetchData($request);
             default:
-                throw new NotFoundHttpException('Url not found');
+                throw new NotFoundHttpException('Url not found', Response::HTTP_NOT_FOUND);
         }
     }
 }
